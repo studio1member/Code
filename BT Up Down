@@ -1,0 +1,45 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
+using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.EventSystems;
+
+public class ButtonMove : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
+{
+    MoveNew MoveScript;
+
+    CircleCollider2D ldie;
+    public GameObject gObject;
+    public float OffsetY;
+    public float OffsetY1;
+
+    void Awake()
+    {
+        ldie = gObject.GetComponent<CircleCollider2D>();
+        MoveScript = gObject.GetComponent<MoveNew>();
+    }
+
+    public void OnPointerDown(PointerEventData data)
+    {
+        if(gameObject.name == "Jump")
+        {
+            MoveScript.JumpJaw();
+            MoveScript.Anim.SetBool("Jump", true);
+        }else
+        {
+            MoveScript.Anim.SetBool("SuperRun", true);
+
+            Vector2 OffY = ldie.offset;
+            OffY.y = OffY.y + OffsetY;
+            ldie.offset = OffY;
+        }
+    }
+    public void OnPointerUp(PointerEventData data)
+    {
+        MoveScript.Anim.SetBool("SuperRun", false);
+        Vector2 OffY = ldie.offset;
+        OffY.y = OffY.y + OffsetY1;
+        ldie.offset = OffY;
+    }
+}
