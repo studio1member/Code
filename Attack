@@ -39,17 +39,17 @@ public class PlayerAttack : MonoBehaviour
     {
         animPlayer.SetTrigger("Attack");
 
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPiont.position, attackRange, enemyLayers);
-        foreach(Collider2D enemy in hitEnemies)
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPiont.position, attackRange, enemyLayers); //điểm tấn công, vùng tấn công, đối tượng tấn công(Layers)
+        foreach(Collider2D enemy in hitEnemies) //tạo biến "Collider2D" enemy in(trong) truyền "hitEnemies
         {
-            enemy.GetComponent<EnemyHealth>().TakeDamage(attackDamage);
+            enemy.GetComponent<EnemyHealth>().TakeDamage(attackDamage); //Lấy script nhận damege
         }
     }
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmosSelected() //hiển thị bán kính gây damege
     {
         if (attackPiont == null)
             return;
-        Gizmos.DrawWireSphere(attackPiont.position, attackRange);
+        Gizmos.DrawWireSphere(attackPiont.position, attackRange); //"DrawWireSphere" > hình cầu. truyền vị trí, vùng thi triển
     }
 
 }
