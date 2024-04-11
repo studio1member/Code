@@ -1,0 +1,55 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerAttack : MonoBehaviour
+{
+    [SerializeField] private Animator animPlayer;
+    [SerializeField] private GameObject OBPlayer;
+
+    [SerializeField] private Transform attackPiont;
+    [SerializeField] private float attackRange;
+    [SerializeField] private LayerMask enemyLayers;
+
+    [Header("Delay")]
+    [SerializeField] private float delay;
+    [SerializeField] private float delaySpawn;
+
+    public int attackDamage;
+    void Awake()
+    {
+        animPlayer = OBPlayer.GetComponent<Animator>();
+    }
+    void Update()
+    {
+        if (delay >= delaySpawn)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                f_Attack();
+                delay = 0;
+            }
+        }
+        else
+        {
+            delay += Time.deltaTime;
+        }
+    }
+    void f_Attack()
+    {
+        animPlayer.SetTrigger("Attack");
+
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPiont.position, attackRange, enemyLayers);
+        foreach(Collider2D enemy in hitEnemies)
+        {
+            enemy.GetComponent<EnemyHealth>().TakeDamage(attackDamage);
+        }
+    }
+    private void OnDrawGizmosSelected()
+    {
+        if (attackPiont == null)
+            return;
+        Gizmos.DrawWireSphere(attackPiont.position, attackRange);
+    }
+
+}
