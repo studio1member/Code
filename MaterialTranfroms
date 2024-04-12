@@ -1,0 +1,50 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Cloud : MonoBehaviour
+{
+    public bool Tr = true;
+    [SerializeField] private GameObject Ldie_1;
+    [SerializeField] private Rigidbody2D MyBody;
+
+    public float ScrollSpeed;
+
+    private Material Mat;
+
+    private Vector2 offset = Vector2.zero;
+    private void Awake()
+    {
+        Mat = GetComponent<Renderer>().material;
+        MyBody = Ldie_1.GetComponent<Rigidbody2D>();
+    }
+    void Start()
+    {
+        offset = Mat.GetTextureOffset("_MainTex");
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        float H = Math.Abs(MyBody.velocity.x);
+        if(Tr == true)
+        {
+            if (H > 0)
+            {
+                offset.x += ScrollSpeed * Time.deltaTime;
+                Mat.SetTextureOffset("_MainTex", offset);
+            }
+            else
+            {
+                offset.x = 0f;
+                Mat.SetTextureOffset("_MainTex", offset);
+            }
+        }
+        else
+        {
+            offset.x += ScrollSpeed * Time.deltaTime;
+            Mat.SetTextureOffset("_MainTex", offset);
+        }
+    }
+}
