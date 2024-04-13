@@ -1,50 +1,23 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Cloud : MonoBehaviour
+public class MaterialTransfrom : MonoBehaviour
 {
-    public bool Tr = true;
-    [SerializeField] private GameObject Ldie_1;
-    [SerializeField] private Rigidbody2D MyBody;
-
-    public float ScrollSpeed;
-
-    private Material Mat;
-
+    public float Speed;
+    private Material mat;
     private Vector2 offset = Vector2.zero;
-    private void Awake()
+    private void Awake() //gọi trước
     {
-        Mat = GetComponent<Renderer>().material;
-        MyBody = Ldie_1.GetComponent<Rigidbody2D>();
+        mat = GetComponent<Renderer>().material;
     }
-    void Start()
+    private void Start() //gọi sau Awake
     {
-        offset = Mat.GetTextureOffset("_MainTex");
+        offset = mat.GetTextureOffset("_MainTex"); // Material trong preft
     }
-
-    // Update is called once per frame
     void Update()
     {
-        float H = Math.Abs(MyBody.velocity.x);
-        if(Tr == true)
-        {
-            if (H > 0)
-            {
-                offset.x += ScrollSpeed * Time.deltaTime;
-                Mat.SetTextureOffset("_MainTex", offset);
-            }
-            else
-            {
-                offset.x = 0f;
-                Mat.SetTextureOffset("_MainTex", offset);
-            }
-        }
-        else
-        {
-            offset.x += ScrollSpeed * Time.deltaTime;
-            Mat.SetTextureOffset("_MainTex", offset);
-        }
+        offset.x += Speed * Time.deltaTime;
+        mat.SetTextureOffset("_MainTex", offset);
     }
 }
