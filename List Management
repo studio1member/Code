@@ -1,0 +1,43 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class SpawnMinion : MonoBehaviour
+{
+    public float max = 5f;
+    public List<GameObject> listMinions;
+    public GameObject minion;
+    private void Start()
+    {
+        listMinions = new List<GameObject>();
+    }
+    private void Update()
+    {
+        Spawn();
+        CheckMinionDead();
+    }
+    void Spawn()
+    {
+        if (listMinions.Count >= max) return; //nếu trong danh sách lớn hơn hoặc bằng "mã" thì sẽ trả lại "return"
+
+        GameObject minion = Instantiate(this.minion);
+
+        minion.transform.position = transform.position; //vị trí spawn
+        minion.SetActive(true);
+
+        listMinions.Add(minion); //thêm minion vào danh sách
+    }
+    void CheckMinionDead()
+    {
+        for (int i = 0; i < max; i++)
+        {
+            GameObject minion;
+            minion = listMinions[i]; //khởi tạo minion (vì hàm này gọi trong updata nên khởi tạo liên tục)
+
+            if (minion == null) //nếu có 1 minion dead thì sẽ...
+            {
+                listMinions.RemoveAt(i); //... "RemoveAt" xóa nó trong danh sách => Hàm "Spawn()" sẽ ddc gọi tiếp để spawn
+            }
+        }
+    }
+}
