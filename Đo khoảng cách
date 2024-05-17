@@ -1,0 +1,24 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class GitHub : MonoBehaviour
+{
+    public float distance = 0; //khoảng cách hiện tại
+    private void FixedUpdate()
+    {
+        this.UpdateRoad(); //cập nhật nhưng không liên tục
+    }
+    protected virtual void UpdateRoad()
+    {
+        this.distance = Vector2.Distance(PlayerCtrl.instance.transform.position, transform.position);
+        /*"Distance" đo khoảng cách từ điểm A đến điểm B
+        Đo từ vị trí của PlayerCtrl đến vị trí của Object*/
+
+        if (this.distance > 70) this.Despawn(); //nếu khoản cách hiện tại lớn hơn 70 thì xóa object
+    }
+    protected virtual void Despawn()
+    {
+        Destroy(gameObject);
+    }
+}
