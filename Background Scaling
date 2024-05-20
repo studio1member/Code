@@ -1,0 +1,13 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class backGround : MonoBehaviour
+{
+    void Start()
+    {
+        float worldHeight = Camera.main.orthographicSize * 2f; // Y
+        float worldWidth = worldHeight * Screen.width / Screen.height; // X
+        transform.localScale = new Vector3(worldWidth, worldHeight, 0);
+    }
+}
