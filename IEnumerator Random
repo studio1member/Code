@@ -1,0 +1,16 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class RandomQuestions : MonoBehaviour
+{
+    private void Start()
+    {
+        StartCoroutine(Delay());
+    }
+    IEnumerator Delay()
+    {
+        yield return new WaitForSeconds(0.5f);
+        Debug.Log("Delay 0.5 giây");
+    }
+}
