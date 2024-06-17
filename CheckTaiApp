@@ -1,0 +1,19 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CheckTaiGameManager : MonoBehaviour
+{
+    private void Awake()
+    {
+        CheckTaiGame();
+    }
+    private void CheckTaiGame()
+    {
+        if (!PlayerPrefs.HasKey("CheckApp")) //"CheckApp" mặc định bằng 1 (false), nếu "CheckApp" khác true thì...
+        {
+            PlayerPrefs.SetInt("set Key giá trị muốn set", 0); //SetInt kiểu giá trị muốn set, 0 = số giá trị muốn set
+            PlayerPrefs.SetInt("CheckApp", 0); //...SetInt "CheckApp" bằng 0 (true)
+        }
+    }
+}
