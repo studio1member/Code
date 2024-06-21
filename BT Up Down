@@ -7,10 +7,10 @@ public class ButtonMove : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
 {
     public void OnPointerDown(PointerEventData data)
     {
-
+        if (gameObject.name == "MoveLeft Button") Debug.Log("Down");
     }
     public void OnPointerUp(PointerEventData data)
     {
-
+        Debug.Log("Up");
     }
 }
