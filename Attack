@@ -50,6 +50,7 @@ public class PlayerAttack : MonoBehaviour
         if (attackPiont == null)
             return;
         Gizmos.DrawWireSphere(attackPiont.position, attackRange); //"DrawWireSphere" > hình cầu. truyền vị trí, vùng thi triển
+        //https://docs.unity3d.com/Packages/com.unity.physics@1.0/manual/component-debug-display.html
     }
 
 }
