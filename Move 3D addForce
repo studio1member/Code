@@ -42,7 +42,6 @@ public class PlayerMovementTutorial : MonoBehaviour
 
         readyToJump = true;
     }
-
     private void Update()
     {
         // (bool)grounded = vật lý.Raycast(vị trí check, phương hướng, khoảng cách, LayerMask
@@ -57,12 +56,10 @@ public class PlayerMovementTutorial : MonoBehaviour
         else
             rb.drag = 0;
     }
-
     private void FixedUpdate()
     {
         MovePlayer();
     }
-
     private void MyInput()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
@@ -89,14 +86,13 @@ public class PlayerMovementTutorial : MonoBehaviour
         if(grounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
 
-        else if(!grounded)
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
-    }
+        else rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+        //if(!grounded)
 
+    }
     private void SpeedControl()
     {
         Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
         // giới hạn tốc tộc
         if(flatVel.magnitude > moveSpeed)
         {
