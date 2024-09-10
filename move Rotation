@@ -1,0 +1,26 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class MoveHAOLAN : MonoBehaviour
+{
+    private Rigidbody rig;
+    [SerializeField] private float moveSpeed;
+    private float hor, ver;
+    private void Update()
+    {
+        hor = Input.GetAxisRaw("Horizontal");
+        ver = Input.GetAxisRaw("Vertical");
+    }
+    private void FixedUpdate()
+    {
+        Vector3 MoveV = new Vector3(hor, 0, ver).normalized;
+        rig.AddForce(MoveV * moveSpeed * Time.deltaTime, ForceMode.Force);
+
+        if (ver != 0 || hor != 0)
+        {
+            transform.forward = MoveV;
+            //transform.rotation = Quaternion.LookRotation(rig.velocity); xoay 2
+        }
+    }
+}
