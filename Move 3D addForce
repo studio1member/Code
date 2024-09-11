@@ -51,7 +51,7 @@ public class PlayerMovementTutorial : MonoBehaviour
         SpeedControl(); // giới hạn tốc độ
 
         // handle drag
-        if (grounded) // fix jump
+        if (grounded) // fix ma sát
             rb.drag = groundDrag;
         else
             rb.drag = 0;
@@ -103,7 +103,7 @@ public class PlayerMovementTutorial : MonoBehaviour
 
     private void Jump() // nhảy
     {
-        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z); //fix jump bị tăng tốc
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
     private void ResetJump()
