@@ -1,0 +1,14 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class TEST : MonoBehaviour
+{
+    public Transform objectRots;
+    Quaternion rots;
+    void Start()
+    {
+        rots = Quaternion.Euler(objectRots.eulerAngles.x + 90, objectRots.eulerAngles.y, objectRots.eulerAngles.z);
+        objectRots.transform.rotation = rots;
+    }
+}
