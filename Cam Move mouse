@@ -1,0 +1,26 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CamMove : MonoBehaviour
+{
+    private float x, y, yRotate, xRotate;
+    public float sensitivity;
+    [SerializeField] private Transform Player;
+    void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+    void Update()
+    {
+        x = Input.GetAxis("Mouse Y");
+        y = Input.GetAxis("Mouse X");
+
+        yRotate += y;
+        xRotate -= x;
+        xRotate = Mathf.Clamp(xRotate, -50, 50);
+
+        transform.localRotation = Quaternion.Euler(xRotate, 0, 0);
+        Player.localRotation = Quaternion.Euler(0, yRotate, 0);
+    }
+}
