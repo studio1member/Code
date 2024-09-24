@@ -1,0 +1,5 @@
+void Update()
+{
+    float fps = 1.0f / Time.deltaTime;
+    Debug.Log("FPS: " + Mathf.Ceil(fps));
+}
