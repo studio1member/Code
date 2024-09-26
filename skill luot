@@ -1,0 +1,51 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class skillLuot : MonoBehaviour
+{
+    public float dashDistance = 10f;  // Khoảng cách lướt
+    public float dashDuration = 0.5f;  // Thời gian lướt
+    public AnimationCurve speedCurve;  // Đường cong tốc độ lướt
+
+    private bool isDashing = false;
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && !isDashing) // Nhấn phím Space để lướt
+        {
+            StartCoroutine(Dash());
+        }
+    }
+
+    IEnumerator Dash()
+    {
+        isDashing = true;
+
+        Vector3 startPosition = transform.position; //vị trí hiện tại của player
+
+        //tính toán vị trí cần lướt tới
+        //vị trí hiện tại + hướng trước mặt của nhân vật * khoảng cách lướt
+        Vector3 targetPosition = startPosition + transform.forward * dashDistance * Time.deltaTime; 
+
+        float startTime = Time.time; //tạo 1 biến chưa giá trị của thời gian game hiện tại
+
+        //nếu (thời gian game < biến(chứa thời gian của game) + thời gian lướt)
+        while (Time.time < startTime + dashDuration)
+        {
+            // tạo 1 biến t = (thời gian của game - biến(chứa thời gian của game)) / thời gian lướt
+            float t = (Time.time - startTime) / dashDuration;
+
+            // Sử dụng AnimationCurve để điều chỉnh tốc độ lướt theo thời gian
+            float curveSpeed = speedCurve.Evaluate(t);
+
+            // Di chuyển nhân vật từ vị trí bắt đầu đến vị trí đích
+            transform.position = Vector3.Lerp(startPosition, targetPosition, curveSpeed);
+
+            // giống Time.deltaTime nhưng áp dụng cho lệnh lặp
+            yield return null; //sẽ cho chuyển động nhích dần tạo cảm giắc chuyển động
+        }
+
+        isDashing = false;
+    }
+}
