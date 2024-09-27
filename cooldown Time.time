@@ -1,0 +1,34 @@
+public class CooldownExample : MonoBehaviour
+{
+    public float cooldownTime = 60.0f;  // Thời gian hồi chiêu (giây)
+    private float lastUseTime;          // Lưu thời gian kỹ năng được sử dụng lần cuối
+
+    void Start()
+    {
+        // Khởi tạo lastUseTime để người chơi có thể sử dụng skill ngay lập tức
+        lastUseTime = -cooldownTime;
+    }
+
+    void Update()
+    {
+        // Kiểm tra nếu phím space được nhấn và cooldown đã kết thúc
+        if (Input.GetKeyDown(KeyCode.Space) && Time.time >= lastUseTime + cooldownTime)
+        {
+            UseSkill();
+            lastUseTime = Time.time; // Cập nhật lại thời gian sử dụng kỹ năng
+        }
+
+        // Tính thời gian hồi chiêu còn lại và in ra debug
+        float remainingCooldown = (lastUseTime + cooldownTime) - Time.time;
+        if (remainingCooldown > 0)
+        {
+            Debug.Log("Thời gian hồi chiêu còn lại: " + remainingCooldown.ToString("F2") + " giây");
+        }
+    }
+
+    void UseSkill()
+    {
+        Debug.Log("Skill được sử dụng!");
+        // Thực hiện các hành động khi sử dụng skill ở đây
+    }
+}
