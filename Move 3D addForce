@@ -1,113 +1,81 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using UnityEditor;
 
-public class PlayerMovementTutorial : MonoBehaviour
+[RequireComponent(typeof(Rigidbody))]
+public class MovementFix : MonoBehaviour
 {
-    [Header("Movement")]
-    public float moveSpeed;
+    [Header("Move Player")]
+    [SerializeField] private float moveSpeed;
+    [SerializeField] private float drag;
+    [SerializeField] private float air;
+    private CameraCtrl cameras;
+    private Rigidbody rig;
+    private CapsuleCollider capsu;
+    private float ver;
+    private float hor;
 
-    public float groundDrag;
-
-    public float jumpForce;
-    public float jumpCooldown;
-    public float airMultiplier;
-    [SerializeField] private bool readyToJump;
-
-    [HideInInspector] public float walkSpeed;
-    [HideInInspector] public float sprintSpeed;
-
-    [Header("Keybinds")]
-    public KeyCode jumpKey = KeyCode.Space;
-
-    [Header("Ground Check")]
-    public float playerHeight;
-    public LayerMask whatIsGround;
-    [SerializeField] private bool grounded;
-
-    public Transform orientation;
-
-    float horizontalInput;
-    float verticalInput;
-
-    Vector3 moveDirection;
-
-    Rigidbody rb;
-
-    private void Start()
+    [Header("Jump Player")]
+    [SerializeField] private LayerMask layerGround;
+    [SerializeField] private KeyCode JumpKey;
+    [SerializeField] private float jumpForce;
+    [SerializeField] private float height;
+    [SerializeField] private bool checkGround;
+    private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
-        rb.freezeRotation = true; //dóng băng xuay
+        rig = GetComponent<Rigidbody>();
+        rig.freezeRotation = true;
+        capsu = GetComponent<CapsuleCollider>();
+        capsu.material = AssetDatabase.LoadAssetAtPath<PhysicMaterial>("Assets/File/Player/Player Physic.physicMaterial");
 
-        readyToJump = true;
+        cameras = GameObject.Find("Camera Main").GetComponent<CameraCtrl>();
     }
     private void Update()
     {
-        // (bool)grounded = vật lý.Raycast(vị trí check, phương hướng, khoảng cách, LayerMask
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
-
-        MyInput(); // cập nhật nút
-        SpeedControl(); // giới hạn tốc độ
-
-        // handle drag
-        if (grounded) // fix ma sát
-            rb.drag = groundDrag;
-        else
-            rb.drag = 0;
+        InputPlayer();
+        LimitSpeedPlayer();
     }
     private void FixedUpdate()
     {
         MovePlayer();
     }
-    private void MyInput()
+    private void InputPlayer()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
+        ver = Input.GetAxisRaw("Vertical");
+        hor = Input.GetAxisRaw("Horizontal");
 
-        if(Input.GetKey(jumpKey) && readyToJump && grounded)
-        {
-            readyToJump = false;
-
-            Jump();
-
-            Invoke(nameof(ResetJump), jumpCooldown);
-            // nó chỉ đơn giản là tạo ra string dựa trên tên của biến hoặc hàm hoặc 1 kiểu dữ liệu nào đó thôi ;v
-            // Invoke cần truyền vào string là tên của method nên là dùng nameOf để lấy name dưới dạng string thuiii
-        }
+        checkGround = Physics.Raycast(transform.position, Vector3.down, height, layerGround);
+        if (Input.GetKeyDown(JumpKey) && checkGround) JumpPlayer();
     }
-
     private void MovePlayer()
     {
-        // calculate movement direction
-        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        Vector3 move = cameras.Camera_Main_1.forward * ver + cameras.Camera_Main_1.right * hor;
+        
 
-        // check ground
-        if(grounded)
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
-
-        else rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
-        //if(!grounded)
-
-    }
-    private void SpeedControl()
-    {
-        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-        // giới hạn tốc tộc
-        if(flatVel.magnitude > moveSpeed)
+        if (checkGround)
         {
-            Vector3 limitedVel = flatVel.normalized * moveSpeed;
-            rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
+            rig.drag = drag;
+            rig.AddForce(move.normalized * moveSpeed * 10, ForceMode.Force);
+        }
+        else
+        {
+            rig.drag = 0f;
+            rig.AddForce(move.normalized * moveSpeed * air * 10, ForceMode.Force);
         }
     }
-
-    private void Jump() // nhảy
+    private void LimitSpeedPlayer()
     {
-        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z); //fix jump bị tăng tốc
-        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        Vector3 checkVelocity = new Vector3(rig.velocity.x, 0, rig.velocity.z);
+        if(checkVelocity.magnitude > moveSpeed)
+        {
+            Vector3 limitSpeed = checkVelocity.normalized * moveSpeed;
+            rig.velocity = new Vector3(limitSpeed.x, rig.velocity.y, limitSpeed.z);
+        }
     }
-    private void ResetJump()
+    private void JumpPlayer()
     {
-        readyToJump = true;
+        rig.velocity = new Vector3(rig.velocity.x, 0f, rig.velocity.z);
+        rig.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
 }
