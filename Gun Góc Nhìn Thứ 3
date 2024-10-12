@@ -1,0 +1,43 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Gun : MonoBehaviour
+{
+    [SerializeField] private Camera playerCamera; //camera nhân vật
+    [SerializeField] private GameObject bullet; //đạn
+    [SerializeField] private Transform gunPos; //Vị trí lòng súng (thật)
+    [SerializeField] private float speedBullet;
+    private void Update()
+    {
+        if (Input.GetMouseButton(0)) Shoot(); //bấm chuột trái để bắn
+    }
+    private void Shoot()
+    {
+        Ray ray = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f)); //lấy tâm của camera
+                                                                                // "ViewportPointToRay" đc sử dụng ko gian chuyển đổi (ko gian 2D mà camera nhìn vào)
+
+        RaycastHit hit; // lưu trữ phát bắn của Ray
+        Vector3 targetPoint;
+
+        if(Physics.Raycast(ray, out hit))
+        {
+            targetPoint = hit.point; //nếu bắn chúng sẽ lấy vị trí điểm tới
+        }
+        else
+        {
+            targetPoint = ray.GetPoint(1000); // Nếu không trúng, bắn về hướng trước mặt xa 1000 đơn vị
+        }
+
+        Transform bullet = Instantiate(this.bullet).transform;
+        bullet.gameObject.SetActive(true);
+        bullet.position = gunPos.position;
+        bullet.rotation = gunPos.rotation;
+
+
+        Vector3 direction = (targetPoint - gunPos.position).normalized;
+        // điểm đến - vị trí súng thật
+
+        bullet.GetComponent<Rigidbody>().velocity = direction * speedBullet; //tốc độ bắn
+    }
+}
