@@ -1,0 +1,1 @@
+prefebPlayer = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Player/Player Prefab.prefab");
