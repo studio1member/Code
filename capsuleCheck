@@ -5,6 +5,14 @@ Vector3 point2 = point1 + Vector3.down * capsuleHeight;
 
 player.checkJump = Physics.CheckCapsule(point1, point2, capsuleRadius, layerGround);
 
+private void OnDrawGizmos()
+{
+    Gizmos.color = Color.cyan;
+    Vector3 point1 = pointCheckGround.position;
+    Vector3 point2 = point1 + Vector3.down * 1.0f;
+    Gizmos.DrawWireSphere(point1, 0.3f);
+    Gizmos.DrawWireSphere(point2, 0.3f);
+}
 /*
 point1: điểm bắt đầu ở chân nhân vật (đặt ở Point Check Ground).
 
