@@ -1,0 +1,16 @@
+float capsuleRadius = 0.3f;
+float capsuleHeight = 1.0f;
+Vector3 point1 = pointCheckGround.position;
+Vector3 point2 = point1 + Vector3.down * capsuleHeight;
+
+player.checkJump = Physics.CheckCapsule(point1, point2, capsuleRadius, layerGround);
+
+/*
+point1: điểm bắt đầu ở chân nhân vật (đặt ở Point Check Ground).
+
+point2: điểm dưới cùng của capsule (đi xuống một đoạn capsuleHeight).
+
+capsuleRadius: bán kính capsule (nên gần bằng nửa chiều rộng nhân vật).
+
+layerGround: tầng mặt đất bạn cần kiểm tra va chạm.
+*/
