@@ -46,6 +46,8 @@ public class MovementFix : MonoBehaviour
         hor = Input.GetAxisRaw("Horizontal");
 
         checkGround = Physics.Raycast(transform.position, Vector3.down, height, layerGround);
+        //player.checkJump = Physics.SphereCast(pointCheckGround.position, sphereRadius, Vector3.down, out RaycastHit hit, directionCheck, layerGround);
+
         if (Input.GetKeyDown(JumpKey) && checkGround) JumpPlayer();
     }
     private void MovePlayer()
@@ -78,4 +80,9 @@ public class MovementFix : MonoBehaviour
         rig.velocity = new Vector3(rig.velocity.x, 0f, rig.velocity.z);
         rig.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
+    /*private void OnDrawGizmos()
+    {
+    Gizmos.color = Color.green;
+    Gizmos.DrawWireSphere(transform.position + Vector3.down * directionCheck, 0.2f);
+    }*/
 }
