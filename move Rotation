@@ -21,6 +21,9 @@ public class MoveHAOLAN : MonoBehaviour
         {
             transform.forward = MoveV;
             //transform.rotation = Quaternion.LookRotation(rig.velocity); xoay 2
+
+            /* Quaternion toRotation = Quaternion.LookRotation(moveDir, Vector3.up);
+            transform.rotation = Quaternion.Slerp(transform.rotation, toRotation, rotationSpeed * Time.deltaTime); */
         }
     }
 }
