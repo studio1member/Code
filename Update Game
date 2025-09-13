@@ -1,0 +1,99 @@
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Net;
+using System.Windows.Forms;
+using System.IO.Compression;
+
+namespace MyGameLauncher
+{
+    public partial class Form1 : Form
+    {
+        string gameExe = "2D_Game.exe"; // tên file exe Unity build ra
+        string versionUrl = "https://drive.google.com/uc?export=download&id=ID_VERSION_FILE"; 
+        string gameZipUrl = "https://drive.google.com/uc?export=download&id=ID_GAME_ZIP";  
+
+        string localVersionFile = Application.StartupPath + "\\version.txt";
+        string localGamePath = Application.StartupPath;
+
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            labelStatus.Text = "Đang kiểm tra phiên bản...";
+            CheckUpdate();
+        }
+
+        private void CheckUpdate()
+        {
+            using (WebClient client = new WebClient())
+            {
+                try
+                {
+                    string onlineVersion = client.DownloadString(versionUrl).Trim();
+                    string localVersion = File.Exists(localVersionFile) ? File.ReadAllText(localVersionFile).Trim() : "0";
+
+                    if (onlineVersion != localVersion)
+                    {
+                        labelStatus.Text = "Có phiên bản mới. Đang tải...";
+                        DownloadAndUpdate(onlineVersion);
+                    }
+                    else
+                    {
+                        labelStatus.Text = "Game đã mới nhất.";
+                        LaunchGame();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    labelStatus.Text = "Lỗi: " + ex.Message;
+                }
+            }
+        }
+
+        private void DownloadAndUpdate(string newVersion)
+        {
+            using (WebClient client = new WebClient())
+            {
+                string zipPath = Path.Combine(localGamePath, "update.zip");
+
+                client.DownloadFileCompleted += (s, e) =>
+                {
+                    labelStatus.Text = "Đang giải nén...";
+                    if (File.Exists(zipPath))
+                    {
+                        ZipFile.ExtractToDirectory(zipPath, localGamePath, true);
+                        File.Delete(zipPath);
+
+                        File.WriteAllText(localVersionFile, newVersion);
+                        labelStatus.Text = "Cập nhật xong!";
+                        LaunchGame();
+                    }
+                };
+
+                client.DownloadProgressChanged += (s, e) =>
+                {
+                    progressBar1.Value = e.ProgressPercentage;
+                };
+
+                client.DownloadFileAsync(new Uri(gameZipUrl), zipPath);
+            }
+        }
+
+        private void LaunchGame()
+        {
+            if (File.Exists(Path.Combine(localGamePath, gameExe)))
+            {
+                Process.Start(Path.Combine(localGamePath, gameExe));
+                this.Close();
+            }
+            else
+            {
+                labelStatus.Text = "Không tìm thấy file game!";
+            }
+        }
+    }
+}
