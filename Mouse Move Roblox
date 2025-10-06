@@ -1,0 +1,43 @@
+using UnityEngine;
+
+public class MouseFreeze : MonoBehaviour
+{
+    private Vector3 lastMousePosition;
+    private bool isLocked = false;
+
+    void Update()
+    {
+        // Khi nhấn chuột phải → khóa vị trí chuột
+        if (Input.GetMouseButtonDown(1))
+        {
+            lastMousePosition = Input.mousePosition;
+            isLocked = true;
+        }
+
+        // Khi thả chuột phải → mở khóa
+        if (Input.GetMouseButtonUp(1))
+        {
+            isLocked = false;
+        }
+
+        // Giữ chuột đứng yên nếu đang khóa
+        if (isLocked)
+        {
+            // "Cố định" chuột tại vị trí cũ
+            WarpMouseTo(lastMousePosition);
+        }
+    }
+
+    // Đặt lại vị trí chuột cũ — chỉ hoạt động trên Windows
+    void WarpMouseTo(Vector3 pos)
+    {
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR
+        SetCursorPos((int)pos.x, (int)(Screen.height - pos.y));
+#endif
+    }
+
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern bool SetCursorPos(int X, int Y);
+#endif
+}
