@@ -1,0 +1,41 @@
+using UnityEngine;
+
+public class CameraCollision : MonoBehaviour
+{
+    public Transform target; // Nhân vật hoặc điểm camera theo dõi
+    public float smooth = 10.0f; // độ mượt khi thu phóng
+    public float minDistance = 0.5f; // khoảng cách gần nhất
+    public float maxDistance = 3.0f; // khoảng cách xa nhất
+    public float cameraRadius = 0.2f; // bán kính để kiểm tra va chạm
+    public LayerMask collisionMask; // layer va chạm (ví dụ: tường, nền)
+
+    private float currentDistance;
+    private Vector3 desiredCameraPos;
+
+    void Start()
+    {
+        currentDistance = maxDistance;
+    }
+
+    void LateUpdate()
+    {
+        // Vị trí camera mong muốn (ở sau player)
+        desiredCameraPos = target.position - transform.forward * maxDistance;
+
+        // Raycast từ player ra sau lưng
+        if (Physics.SphereCast(target.position, cameraRadius, -transform.forward, out RaycastHit hit, maxDistance, collisionMask))
+        {
+            // Nếu chạm vật thể → thu camera lại
+            float distance = Mathf.Clamp(hit.distance, minDistance, maxDistance);
+            currentDistance = Mathf.Lerp(currentDistance, distance, Time.deltaTime * smooth);
+        }
+        else
+        {
+            // Không chạm vật thể → trở lại khoảng cách tối đa
+            currentDistance = Mathf.Lerp(currentDistance, maxDistance, Time.deltaTime * smooth);
+        }
+
+        // Cập nhật vị trí camera thật
+        transform.position = target.position - transform.forward * currentDistance;
+    }
+}
