@@ -1,0 +1,22 @@
+using UnityEngine;
+using Photon.Pun;
+
+public class DamageReceiver : MonoBehaviourPun
+{
+    [SerializeField] private float maxHealth = 100f;
+    private float currentHealth;
+
+    void Start()
+    {
+        currentHealth = maxHealth;
+    }
+
+    [PunRPC]
+    public void TakeDamage(float amount)
+    {
+        currentHealth -= amount;
+    }
+}
+
+// Gọi RPC tới máy chủ người nhận damage
+            targetView.RPC("TakeDamage", targetView.Owner, 20f);
